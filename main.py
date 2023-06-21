@@ -43,6 +43,17 @@ class Tile(ABC):
         self.is_flagged = is_flagged
 
 
+class TileMine(Tile):
+    def __init__(self, _grid, _x, _y, is_open, is_flagged):
+        super().__init__(_grid, _x, _y, is_open, is_flagged)
+
+
+class TileHint(Tile):
+    def __init__(self, _grid, _x, _y, is_open, is_flagged, hint=0):
+        super().__init__(_grid, _x, _y, is_open, is_flagged)
+        self.hint = hint
+
+
 ms = MineSweeper()
 
 hauteur = sys.argv[1]

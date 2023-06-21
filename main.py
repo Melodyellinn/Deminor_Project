@@ -16,6 +16,7 @@ class MineSweeper:
     def new_game(self, grid_size):
         self.is_playing = True
         print(f'La partie commence avec une grille de : {grid_size}')
+        new_grid = Grid()
 
     def open(self, x, y):
         if not self.is_playing:
@@ -26,6 +27,10 @@ class MineSweeper:
         if not self.is_playing:
             raise NotRunningError("Pas de partie en cours")
         print(f"Flagger la case {x}, {y}")
+
+
+class Grid:
+    pass
 
 
 ms = MineSweeper()

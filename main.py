@@ -2,55 +2,48 @@
 
 # --- Programme de base --- #
 
-# ---- 1 ---- #
+class NotRunningError(Exception):
+    pass
 
-# import sys
-
-# file_name = sys.argv[0]
-# hauteur = sys.argv[1]
-# largeur = sys.argv[2]
-# print("Document", sys.argv)
-# print("Hauteur :", hauteur)
-# print("Largeur :", largeur)
-
-# ---- 2 ---- #
-
-# while True:
-#     x = input("Entrez x :")
-#     y = input("Entrez y :")
-
-# ---- 3 ---- #
-
-# while True:
-#     input_player = input("Entrez deux chiffres (exp : 5 2) :")
-
-#     if input_player[0] == "F":
-#         input_player_split = input_player.split(" ")
-#         x = input_player_split[1]
-#         y = input_player_split[2]
-#         print(f"Flagger la case {x}, {y}")
-#     else:
-#         xy_split = input_player.split(" ")
-#         x = xy_split[0]
-#         y = xy_split[1]
-#         print(f"Ouvrir la case {x}, {y}")
-
-# ---- 4 ---- #
 
 class MineSweeper:
-    def open(self, input_player):
-        xy_split = input_player.split(" ")
-        x = xy_split[0]
-        y = xy_split[1]
+    def __init__(self):
+        self.is_playing = False
+
+    def open(self, x, y):
+        if not self.is_playing:
+            raise NotRunningError("Pas de partie en cours")
         print(f"Ouvrir la case {x}, {y}")
 
-    def flag(self, input_player):
-        input_player_split = input_player.split(" ")
-        x = input_player_split[1]
-        y = input_player_split[2]
+    def flag(self, x, y):
+        if not self.is_playing:
+            raise NotRunningError("Pas de partie en cours")
         print(f"Flagger la case {x}, {y}")
 
+    def new_game(self, grid_size):
+        self.is_playing = True
+        print(f'La partie commence avec une grille de : {grid_size}')
 
-MineSweeper().open("5 2")
 
-MineSweeper().flag("F 5 2")
+ms = MineSweeper()
+hauteur = int(input("Entrez la hauteur de la grille : "))
+largeur = int(input("Entrez la largeur de la grille : "))
+grid = hauteur * largeur
+ms.new_game(grid)
+
+while True:
+    input_player = input("Entrez deux chiffres (5 2 ou F 1 3): ")
+    if not input_player:
+        print('Indique quelque chose !')
+    input_player_split = input_player.split(" ")
+
+    if input_player:
+        if input_player[0] == "F":
+            haut = input_player_split[1]
+            larg = input_player_split[2]
+            ms.flag(haut, larg)
+        else:
+            haut = input_player_split[0]
+            larg = input_player_split[1]
+            ms.open(haut, larg)
+

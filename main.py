@@ -42,6 +42,15 @@ class Tile(ABC):
         self.is_open = is_open
         self.is_flagged = is_flagged
 
+    @abstractmethod
+    def __str__(self):
+        if self.is_flagged:
+            return "F"
+        if not self.is_open:
+            return "#"
+        if self.is_open:
+            raise NotImplementedError
+
 
 class TileMine(Tile):
     def __init__(self, _grid, _x, _y, is_open, is_flagged):

@@ -1,6 +1,9 @@
 # ----------- TP Démineur ----------- #
 
 # --- Programme de base --- #
+import sys
+import re
+
 
 class NotRunningError(Exception):
     pass
@@ -27,18 +30,12 @@ class MineSweeper:
 
 ms = MineSweeper()
 
-hauteur = ""
-largeur = ""
-
-while hauteur == "":
-    hauteur = input("Entrez la hauteur de la grille : ")
-    print('Veuillez indiquer un chiffre')
-
-while largeur == "":
-    largeur = input("Entrez la largeur de la grille : ")
-    print('Veuillez indiquer un chiffre')
-
+hauteur = sys.argv[1]
+largeur = sys.argv[2]
+print("Hauteur de la grille:", hauteur)
+print("Largeur de la grille :", largeur)
 grid = int(hauteur) * int(largeur)
+
 ms.new_game(grid)
 
 while True:
@@ -47,7 +44,13 @@ while True:
         print('Indique quelque chose !')
 
     if input_player:
+        input_player_split = input_player.split(" ")
+
         if input_player == "newgame":
+            ms.new_game(grid)
+        elif input_player_split[0] == "newgame" and len(input_player_split) > 1:
+            print('test')
+            grid = int(input_player_split[1]) * int(input_player_split[2])
             ms.new_game(grid)
         elif input_player == "quit":
             print('Fin de partie')
@@ -58,9 +61,14 @@ while True:
             if input_player[0] == "F":
                 haut = input_player_split[1]
                 larg = input_player_split[2]
-                ms.flag(haut, larg)
+                try:
+                    ms.flag(haut, larg)
+                except NotRunningError:
+                    print("La partie n'est pas en cours")
             else:
                 haut = input_player_split[0]
                 larg = input_player_split[1]
-                ms.open(haut, larg)
-
+                try:
+                    ms.open(haut, larg)
+                except NotRunningError:
+                    print("La partie n'est pas en cours")

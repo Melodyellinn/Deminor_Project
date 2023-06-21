@@ -34,13 +34,12 @@ class Grid:
 
 
 class Tile(ABC):
-    @abstractmethod
-    def __init__(self, _grid, _x, _y, is_open, is_flagged):
+    def __init__(self, _grid, _x, _y):
         self._grid = _grid
         self._x = _x
         self._y = _y
-        self.is_open = is_open
-        self.is_flagged = is_flagged
+        self.is_open = False
+        self.is_flagged = False
 
     @abstractmethod
     def __str__(self):
@@ -48,19 +47,30 @@ class Tile(ABC):
             return "F"
         if not self.is_open:
             return "#"
-        if self.is_open:
-            raise NotImplementedError
+        raise NotImplementedError
 
 
 class TileMine(Tile):
-    def __init__(self, _grid, _x, _y, is_open, is_flagged):
-        super().__init__(_grid, _x, _y, is_open, is_flagged)
+    def __init__(self, _grid, _x, _y):
+        super().__init__(_grid, _x, _y)
+
+    def __str__(self):
+        if not self.is_open:
+            return super().__str__()
+        return "O"
 
 
 class TileHint(Tile):
-    def __init__(self, _grid, _x, _y, is_open, is_flagged, hint=0):
-        super().__init__(_grid, _x, _y, is_open, is_flagged)
-        self.hint = hint
+    def __init__(self, _grid, _x, _y):
+        super().__init__(_grid, _x, _y)
+        self.hint = 0
+
+    def __str__(self):
+        if not self.is_open:
+            return super().__str__()
+        if self.hint == 0:
+            return " "
+        return str(self.hint)
 
 
 ms = MineSweeper()

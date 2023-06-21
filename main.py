@@ -2,7 +2,7 @@
 
 # --- Programme de base --- #
 import sys
-import re
+from abc import ABC, abstractmethod
 
 
 class NotRunningError(Exception):
@@ -31,6 +31,16 @@ class MineSweeper:
 
 class Grid:
     pass
+
+
+class Tile(ABC):
+    @abstractmethod
+    def __init__(self, _grid, _x, _y, is_open, is_flagged):
+        self._grid = _grid
+        self._x = _x
+        self._y = _y
+        self.is_open = is_open
+        self.is_flagged = is_flagged
 
 
 ms = MineSweeper()

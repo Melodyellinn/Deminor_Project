@@ -30,8 +30,10 @@ class MineSweeper:
 
 
 class Grid:
-    pass
-
+    def __init__(self, width, height):
+        self._tiles = [[TileHint(self, i, j) for i in range(width)] for j in range(height)]
+        self._width = width
+        self._height = height
 
 class Tile(ABC):
     def __init__(self, _grid, _x, _y):

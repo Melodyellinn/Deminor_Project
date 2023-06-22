@@ -48,6 +48,15 @@ class Grid:
     def get_tile(self, x, y):
         return self._tiles[y][x]
 
+    def __str__(self):
+        grid_str = " "
+        for row in self._tiles:
+            row_str = " "
+            for t in row:
+                row_str += str(t) + " "
+            grid_str += row_str.strip() + "\n"
+        return grid_str.strip()
+
 
 class Tile(ABC):
     def __init__(self, _grid, _x, _y):
@@ -108,6 +117,7 @@ hauteur = int(sys.argv[1])
 largeur = int(sys.argv[2])
 
 ms.new_game(hauteur, largeur)
+print(ms.grid)
 
 while True:
     input_player = input("Entrez deux chiffres (5 2 ou F 1 3), newgame ou quit : ")
@@ -120,8 +130,12 @@ while True:
 
             if input_player == "newgame":
                 ms.new_game(hauteur, largeur)
+                print(ms.grid)
             elif input_player_split[0] == "newgame" and len(input_player_split) > 1:
-                ms.new_game(int(input_player_split[1]), int(input_player_split[2]))
+                hauteur = int(input_player_split[1])
+                largeur = int(input_player_split[2])
+                ms.new_game(hauteur, largeur)
+                print(ms.grid)
             elif input_player == "quit":
                 print('Fin de partie')
                 break

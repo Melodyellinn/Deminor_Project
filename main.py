@@ -1,6 +1,5 @@
 # ----------- TP Démineur ----------- #
 import re
-# --- Programme de base --- #
 import sys
 from abc import ABC, abstractmethod
 from random import sample as sp
@@ -41,6 +40,8 @@ class Grid:
         percentage = 10
         mine_pc = len(tiles_coord) * percentage // 100
         mines = sp(tiles_coord, mine_pc)
+        for x, y in mines:
+            self._tiles[y][x] = TileMine(self, x, y)
 
 
 class Tile(ABC):

@@ -2,7 +2,7 @@
 import re
 import sys
 from abc import ABC, abstractmethod
-from random import sample as sp
+from random import sample
 
 
 class NotRunningError(Exception):
@@ -12,11 +12,13 @@ class NotRunningError(Exception):
 class MineSweeper:
     def __init__(self):
         self.is_playing = False
+        self.grid = None
 
     def new_game(self, height, width):
         self.is_playing = True
         print(f'La partie commence avec une grille de : {width} et {height}')
-        new_grid = Grid(int(width), int(height))
+        self.grid = Grid(width, height)
+        # print(self.grid.get_tile(1, 1).hint)
 
     def open(self, x, y):
         if not self.is_playing:
@@ -32,16 +34,20 @@ class MineSweeper:
 class Grid:
     def __init__(self, width, height):
         self._tiles = [[TileHint(self, i, j) for i in range(width)] for j in range(height)]
-        self._width = width
-        self._height = height
-
-    def _mines_coord(self):
-        tiles_coord = [(x, y) for x in range(self._width) for y in range(self._height)]
-        percentage = 10
-        mine_pc = len(tiles_coord) * percentage // 100
-        mines = sp(tiles_coord, mine_pc)
+        self.width = width
+        self.height = height
+        mines = self._mines_coord()
         for x, y in mines:
             self._tiles[y][x] = TileMine(self, x, y)
+
+    def _mines_coord(self):
+        tiles_coord = [(x, y) for x in range(self.width) for y in range(self.height)]
+        percentage = 10
+        mine_pc = len(tiles_coord) * percentage // 100
+        return sample(tiles_coord, mine_pc)
+
+    def get_tile(self, x, y):
+        return self._tiles[y][x]
 
 
 class Tile(ABC):
@@ -86,8 +92,8 @@ class TileHint(Tile):
 
 ms = MineSweeper()
 
-hauteur = sys.argv[1]
-largeur = sys.argv[2]
+hauteur = int(sys.argv[1])
+largeur = int(sys.argv[2])
 
 ms.new_game(hauteur, largeur)
 
@@ -103,7 +109,7 @@ while True:
             if input_player == "newgame":
                 ms.new_game(hauteur, largeur)
             elif input_player_split[0] == "newgame" and len(input_player_split) > 1:
-                ms.new_game(input_player_split[1], input_player_split[2])
+                ms.new_game(int(input_player_split[1]), int(input_player_split[2]))
             elif input_player == "quit":
                 print('Fin de partie')
                 break

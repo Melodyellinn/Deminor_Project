@@ -3,6 +3,7 @@ import re
 # --- Programme de base --- #
 import sys
 from abc import ABC, abstractmethod
+from random import sample as sp
 
 
 class NotRunningError(Exception):
@@ -34,6 +35,13 @@ class Grid:
         self._tiles = [[TileHint(self, i, j) for i in range(width)] for j in range(height)]
         self._width = width
         self._height = height
+
+    def _mines_coord(self):
+        tiles_coord = [(x, y) for x in range(self._width) for y in range(self._height)]
+        percentage = 10
+        mine_pc = len(tiles_coord) * percentage // 100
+        mines = sp(tiles_coord, mine_pc)
+
 
 class Tile(ABC):
     def __init__(self, _grid, _x, _y):
@@ -79,9 +87,6 @@ ms = MineSweeper()
 
 hauteur = sys.argv[1]
 largeur = sys.argv[2]
-print("Hauteur de la grille:", hauteur)
-print("Largeur de la grille :", largeur)
-# grid = int(hauteur) * int(largeur)
 
 ms.new_game(hauteur, largeur)
 
@@ -97,7 +102,6 @@ while True:
             if input_player == "newgame":
                 ms.new_game(hauteur, largeur)
             elif input_player_split[0] == "newgame" and len(input_player_split) > 1:
-                print('test')
                 ms.new_game(input_player_split[1], input_player_split[2])
             elif input_player == "quit":
                 print('Fin de partie')

@@ -79,17 +79,20 @@ class TileMine(Tile):
 class TileHint(Tile):
     def __init__(self, _grid, _x, _y):
         super().__init__(_grid, _x, _y)
+        self._hint = None
 
     @property
     def hint(self):
-        mines_count = 0
-        adjacent_coords = [(self._x + dx, self._y + dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1)]
-        for x, y in adjacent_coords:
-            if 0 <= x < self._grid.width and 0 <= y < self._grid.height:
-                tile = self._grid.get_tile(x, y)
-                if isinstance(tile, TileMine):
-                    mines_count += 1
-        return mines_count
+        if self._hint is None:
+            mines_count = 0
+            adjacent_coords = [(self._x + dx, self._y + dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1)]
+            for x, y in adjacent_coords:
+                if 0 <= x < self._grid.width and 0 <= y < self._grid.height:
+                    tile = self._grid.get_tile(x, y)
+                    if isinstance(tile, TileMine):
+                        mines_count += 1
+            self._hint = mines_count
+        return self._hint
 
     def __str__(self):
         if not self.is_open:

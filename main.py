@@ -22,6 +22,7 @@ class MineSweeper:
     def open(self, x, y):
         if not self.is_playing:
             raise NotRunningError("Pas de partie en cours")
+        self.grid.open_grid(x, y)
         print(f"Ouvrir la case {x}, {y}")
 
     def flag(self, x, y):
@@ -39,6 +40,15 @@ class Grid:
         for x, y in mines:
             self._tiles[y][x] = TileMine(self, x, y)
 
+    def __str__(self):
+        grid_str = " "
+        for row in self._tiles:
+            row_str = " "
+            for t in row:
+                row_str += str(t) + " "
+            grid_str += row_str.strip() + "\n"
+        return grid_str.strip()
+
     def _mines_coord(self):
         tiles_coord = [(x, y) for x in range(self.width) for y in range(self.height)]
         percentage = 10
@@ -48,14 +58,10 @@ class Grid:
     def get_tile(self, x, y):
         return self._tiles[y][x]
 
-    def __str__(self):
-        grid_str = " "
-        for row in self._tiles:
-            row_str = " "
-            for t in row:
-                row_str += str(t) + " "
-            grid_str += row_str.strip() + "\n"
-        return grid_str.strip()
+    def open_grid(self, x, y):
+        if self.get_tile(x, y).is_open or self.get_tile(x, y).is_flagged:
+            raise NotRunningError
+        self.get_tile(x, y).is_open = True
 
 
 class Tile(ABC):
@@ -143,15 +149,15 @@ while True:
                 input_player_split = input_player.split(" ")
 
                 if input_player[0] == "F":
-                    haut = input_player_split[1]
-                    larg = input_player_split[2]
+                    haut = int(input_player_split[1])
+                    larg = int(input_player_split[2])
                     try:
                         ms.flag(haut, larg)
                     except NotRunningError:
                         print("La partie n'est pas en cours")
                 else:
-                    haut = input_player_split[0]
-                    larg = input_player_split[1]
+                    haut = int(input_player_split[0])
+                    larg = int(input_player_split[1])
                     try:
                         ms.open(haut, larg)
                     except NotRunningError:

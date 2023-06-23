@@ -97,7 +97,7 @@ class Grid:
 
     def _mines_coord(self):
         tiles_coord = [(x, y) for x in range(self.width) for y in range(self.height)]
-        percentage = 100
+        percentage = 10
         mine_pc = len(tiles_coord) * percentage // 100
         return sample(tiles_coord, mine_pc)
 
@@ -163,6 +163,11 @@ class TileHint(Tile):
         super().__init__(_grid, _x, _y)
         self._hint = None
 
+    def open(self):
+        super().open()
+        if self._hint == 0:
+            self._grid._open_full(self._x, self._y)
+
     @property
     def hint(self):
         if self._hint is None:
@@ -186,10 +191,10 @@ class TileHint(Tile):
 
 ms = MineSweeper()
 
-hauteur = int(sys.argv[1])
-largeur = int(sys.argv[2])
+HAUTEUR = int(sys.argv[1])
+LARGEUR = int(sys.argv[2])
 
-ms.new_game(hauteur, largeur)
+ms.new_game(HAUTEUR, LARGEUR)
 print(ms.grid)
 
 while True:
@@ -202,12 +207,12 @@ while True:
             input_player_split = input_player.split(" ")
 
             if input_player == "newgame":
-                ms.new_game(hauteur, largeur)
+                ms.new_game(HAUTEUR, LARGEUR)
                 print(ms.grid)
             elif input_player_split[0] == "newgame" and len(input_player_split) > 1:
-                hauteur = int(input_player_split[1])
-                largeur = int(input_player_split[2])
-                ms.new_game(hauteur, largeur)
+                HAUTEUR = int(input_player_split[1])
+                LARGEUR = int(input_player_split[2])
+                ms.new_game(HAUTEUR, LARGEUR)
                 print(ms.grid)
             elif input_player == "quit":
                 print('Fin de partie')

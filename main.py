@@ -33,6 +33,11 @@ class MineSweeper:
     def open(self, x, y):
         if not self.is_playing:
             raise NotRunningError("Pas de partie en cours")
+
+        if self.is_win() or self.is_lost():
+            print("Partie terminée")
+            return
+
         try:
             tile = self.grid.get_tile(x, y)
             if isinstance(tile, TileMine):
@@ -40,8 +45,13 @@ class MineSweeper:
             self.grid.open_grid(x, y)
 
             self.remaining -= 1
-            print(self.remaining)
             print(f"Ouvrir la case {x}, {y}")
+
+            if self.is_win() or self.is_lost():
+                self.is_playing = False
+                print("Partie terminée")
+                return
+
         except IndexError:
             print('On est en dehors de la grille')
 
@@ -57,6 +67,8 @@ class MineSweeper:
     def is_win(self):
         if self.remaining == 0 and not self.is_mine_open:
             print('TU AS GAGNE !')
+            return True
+        return False
 
     def is_lost(self):
         return self.is_mine_open

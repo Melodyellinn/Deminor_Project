@@ -21,17 +21,20 @@ class MineSweeper:
     def __init__(self):
         self.is_playing = False
         self.grid = None
+        self.remaining = 0
 
     def new_game(self, height, width):
         self.is_playing = True
         print(f'La partie commence avec une grille de : {width} et {height}')
         self.grid = Grid(width, height)
+        self.remaining = width * height
 
     def open(self, x, y):
         if not self.is_playing:
             raise NotRunningError("Pas de partie en cours")
         try:
             self.grid.open_grid(x, y)
+            self.remaining -= 1
             print(f"Ouvrir la case {x}, {y}")
         except IndexError:
             print('On est en dehors de la grille')

@@ -31,12 +31,13 @@ class MineSweeper:
         self.remaining = width * height
 
     def open(self, x, y):
+
         if not self.is_playing:
             raise NotRunningError("Pas de partie en cours")
 
-        if self.is_win() or self.is_lost():
-            print("Partie terminée")
-            return
+        # if self.is_win() or self.is_lost():
+        #     print("001Partie terminée")
+        #     return
 
         try:
             tile = self.grid.get_tile(x, y)
@@ -47,9 +48,12 @@ class MineSweeper:
             self.remaining -= 1
             print(f"Ouvrir la case {x}, {y}")
 
-            if self.is_win() or self.is_lost():
+            if self.is_lost():
                 self.is_playing = False
-                print("Partie terminée")
+                print("Une mine ! Dommage, tu as perdu !")
+            elif self.is_win():
+                self.is_playing = False
+                print("Gagné !")
                 return
 
         except IndexError:
@@ -60,7 +64,6 @@ class MineSweeper:
             raise NotRunningError("Pas de partie en cours")
         try:
             self.grid.toggle_flag(x, y)
-            print(f"Flagger la case {x}, {y}")
         except IndexError:
             print('On est en dehors de la grille')
 
@@ -94,7 +97,7 @@ class Grid:
 
     def _mines_coord(self):
         tiles_coord = [(x, y) for x in range(self.width) for y in range(self.height)]
-        percentage = 10
+        percentage = 100
         mine_pc = len(tiles_coord) * percentage // 100
         return sample(tiles_coord, mine_pc)
 
@@ -102,9 +105,11 @@ class Grid:
         return self._tiles[y][x]
 
     def open_grid(self, x, y):
-        if self.get_tile(x, y).is_open or self.get_tile(x, y).is_flagged:
+        if self.get_tile(x, y).is_open:
             raise TileAlreadyOpenError("C'est déjà ouvert")
-        self.get_tile(x, y).is_open = True
+        elif self.get_tile(x, y).is_flagged:
+            raise FlaggedTileError("C'est déjà flag")
+        self._open_full(x, y)
 
     def toggle_flag(self, x, y):
         if self.get_tile(x, y).is_open:
@@ -115,6 +120,12 @@ class Grid:
             print("La case flag est déflag")
         else:
             self.get_tile(x, y).is_flagged = True
+            print(f"Flagger la case {x}, {y}")
+
+    def _open_full(self, x, y):
+        if self.get_tile(x, y).is_open:
+            return
+        self.get_tile(x, y).open()
 
 
 class Tile(ABC):
@@ -132,6 +143,9 @@ class Tile(ABC):
         if not self.is_open:
             return "#"
         raise NotImplementedError
+
+    def open(self):
+        self.is_open = True
 
 
 class TileMine(Tile):
@@ -208,6 +222,8 @@ while True:
                         ms.flag(haut, larg)
                     except NotRunningError:
                         print("La partie n'est pas en cours")
+                    except TileAlreadyOpenError:
+                        print("Impossible de flag une case déjà ouverte !")
                 else:
                     haut = int(input_player_split[0])
                     larg = int(input_player_split[1])
@@ -215,3 +231,5 @@ while True:
                         ms.open(haut, larg)
                     except NotRunningError:
                         print("La partie n'est pas en cours")
+                    except TileAlreadyOpenError:
+                        print("La case est déjà ouverte !")

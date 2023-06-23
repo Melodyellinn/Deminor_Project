@@ -35,6 +35,7 @@ class MineSweeper:
         try:
             self.grid.open_grid(x, y)
             self.remaining -= 1
+            print(self.remaining)
             print(f"Ouvrir la case {x}, {y}")
         except IndexError:
             print('On est en dehors de la grille')
@@ -47,6 +48,10 @@ class MineSweeper:
             print(f"Flagger la case {x}, {y}")
         except IndexError:
             print('On est en dehors de la grille')
+
+    def is_win(self):
+        if self.remaining == 0:
+            print('TU AS GAGNE !')
 
 
 class Grid:

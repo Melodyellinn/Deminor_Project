@@ -9,6 +9,14 @@ class NotRunningError(Exception):
     pass
 
 
+class TileAlreadyOpenError(Exception):
+    pass
+
+
+class FlaggedTileError(Exception):
+    pass
+
+
 class MineSweeper:
     def __init__(self):
         self.is_playing = False
@@ -22,13 +30,20 @@ class MineSweeper:
     def open(self, x, y):
         if not self.is_playing:
             raise NotRunningError("Pas de partie en cours")
-        self.grid.open_grid(x, y)
-        print(f"Ouvrir la case {x}, {y}")
+        try:
+            self.grid.open_grid(x, y)
+            print(f"Ouvrir la case {x}, {y}")
+        except IndexError:
+            print('On est en dehors de la grille')
 
     def flag(self, x, y):
         if not self.is_playing:
             raise NotRunningError("Pas de partie en cours")
-        print(f"Flagger la case {x}, {y}")
+        try:
+            self.grid.toggle_flag(x, y)
+            print(f"Flagger la case {x}, {y}")
+        except IndexError:
+            print('On est en dehors de la grille')
 
 
 class Grid:
@@ -60,8 +75,18 @@ class Grid:
 
     def open_grid(self, x, y):
         if self.get_tile(x, y).is_open or self.get_tile(x, y).is_flagged:
-            raise NotRunningError
+            raise TileAlreadyOpenError("C'est déjà ouvert")
         self.get_tile(x, y).is_open = True
+
+    def toggle_flag(self, x, y):
+        if self.get_tile(x, y).is_open:
+            raise TileAlreadyOpenError("C'est déjà ouvert")
+
+        if self.get_tile(x, y).is_flagged:
+            self.get_tile(x, y).is_flagged = False
+            print("La case flag est déflag")
+        else:
+            self.get_tile(x, y).is_flagged = True
 
 
 class Tile(ABC):
